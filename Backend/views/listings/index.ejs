@@ -1,0 +1,116 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- Font Awesome (if not already in boilerplate) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    #filters {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter {
+        margin-top: 2rem;
+        text-align: center;
+        margin-right: 2rem;
+        opacity: 0.7;
+    }
+
+    .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    .filter i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-img-top {
+        object-fit: cover;
+        width: 100%;
+        height: 20rem;
+    }
+</style>
+
+<!-- Filter Bar -->
+<div id="filters">
+    <div class="filter" onclick="applyFilter('Trending')">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Rooms')">
+        <div><i class="fa-solid fa-bed"></i></div>
+        <p>Rooms</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Iconic Cities')">
+        <div><i class="fa-solid fa-city"></i></div>
+        <p>Iconic Cities</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Castles')">
+        <div><i class="fa-solid fa-chess-rook"></i></div>
+        <p>Castles</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Mountain Towns')">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Mountain Towns</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Mountains')">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Mountains</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Swimming Pools')">
+        <div><i class="fa-solid fa-person-swimming"></i></div>
+        <p>Swimming Pools</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Camping')">
+        <div><i class="fa-solid fa-campground"></i></div>
+        <p>Camping</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Farms')">
+        <div><i class="fa-solid fa-tractor"></i></div>
+        <p>Farms</p>
+    </div>
+    <div class="filter" onclick="applyFilter('Arctic')">
+        <div><i class="fa-solid fa-snowflake"></i></div>
+        <p>Arctic</p>
+    </div>
+</div>
+
+<!-- Listings Grid -->
+<div class="container mt-4">
+    <% if (AllListings.length === 0) { %>
+        <div class="text-center mt-5">
+            <h3>No listings available.</h3>
+        </div>
+    <% } else { %>
+        <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+            <% for (let list of AllListings) { %>
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="/listings/<%= list._id %>" class="listing-link text-decoration-none text-dark">
+                            <img src="<%= list.image || '/default.jpg' %>" onerror="this.src='/default.jpg'" class="card-img-top" alt="<%= list.title %>">
+                            <div class="card-body text-center">
+                                <p class="card-text">
+                                    <b><%= list.title %></b><br />
+                                    &#8377; <%= list.price %> / night
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<!-- Filter Logic (optional JavaScript for future) -->
+<!-- <script>
+    function applyFilter(type) {
+        // You can redirect or send query to backend
+        window.location.href = `/listings?filter=${encodeURIComponent(type)}`;
+    }
+</script> -->
