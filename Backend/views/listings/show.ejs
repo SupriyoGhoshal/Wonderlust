@@ -1,10 +1,10 @@
 <% layout("/layouts/boilerplate") %>
 <body>
   <div class="row">
-    <div class="col-9 offset-3">
+    <div class="col-6 offset-3">
       <h3><%= listing.title %></h3>
       <div class="card">
-        <img src= "<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
+        <img src= "<%= listing.image?.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
           <p>
             <b><%= listing.title %></b><br>
@@ -16,17 +16,17 @@
         </div>
       </div>
     
+        
+      <% if (currUser && currUser._id.toString() === listing.owner.toString()) { %>
         <div class="btns mt-3">
           <a href="/Listings/<%= listing._id %>/edit" class="btn btn-dark col-1 me-2">Edit</a>
           <form method="POST" action="/Listings/<%= listing._id %>?_method=DELETE" class="d-inline">
             <button class="btn btn-dark">Delete</button>
           </form>
         </div>
-      <!-- <% if (currUser && currUser._id.toString() === listing.owner.toString()) { %>
-        
-      <% } %> -->
+      <% } %> 
 
-      <div class="col-8 mb-3 mt-4">
+      <div class="col-12 mb-3 mt-4">
         <hr>
         <h4>Leave a review</h4>
         <form action="/Listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">

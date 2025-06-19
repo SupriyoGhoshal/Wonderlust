@@ -3,7 +3,7 @@ const { listingSchema, reviewSchema } = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
 
 module.exports.isLoggedIn = (req,res,next)=>{
-    if(req.isAuthenticated()){
+    if(!req.isAuthenticated()){
         req.session.redirectUrl = req.originalUrl;
         req.flash("error", "Sorry you didn't log in!")
         return res.redirect("/Listings");
