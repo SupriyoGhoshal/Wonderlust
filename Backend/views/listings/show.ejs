@@ -4,7 +4,7 @@
     <div class="col-9 offset-3">
       <h3><%= listing.title %></h3>
       <div class="card">
-        <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
+        <img src= "<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
           <p>
             <b><%= listing.title %></b><br>
@@ -15,15 +15,16 @@
           </p>
         </div>
       </div>
-
-      <% if (currUser && currUser._id.toString() === listing.owner.toString()) { %>
+    
         <div class="btns mt-3">
           <a href="/Listings/<%= listing._id %>/edit" class="btn btn-dark col-1 me-2">Edit</a>
           <form method="POST" action="/Listings/<%= listing._id %>?_method=DELETE" class="d-inline">
             <button class="btn btn-dark">Delete</button>
           </form>
         </div>
-      <% } %>
+      <!-- <% if (currUser && currUser._id.toString() === listing.owner.toString()) { %>
+        
+      <% } %> -->
 
       <div class="col-8 mb-3 mt-4">
         <hr>

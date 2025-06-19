@@ -1,6 +1,6 @@
 <% layout("/layouts/boilerplate") %>
 
-<!-- Font Awesome (if not already in boilerplate) -->
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
 <style>
@@ -9,13 +9,14 @@
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 2rem;
     }
 
     .filter {
-        margin-top: 2rem;
         text-align: center;
-        margin-right: 2rem;
         opacity: 0.7;
+        transition: 0.3s ease;
     }
 
     .filter:hover {
@@ -31,13 +32,37 @@
 
     .card-img-top {
         object-fit: cover;
-        width: 100%;
-        height: 20rem;
+        height: 15rem;
+    }
+
+    .listing-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: 0.3s ease;
+    }
+
+    .card-img-overlay {
+        background-color: rgba(0, 0, 0, 0.4);
+        color: white;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .card:hover .card-img-overlay {
+        opacity: 1;
     }
 </style>
 
 <!-- Filter Bar -->
-<div id="filters">
+<div id="filters" class="container">
     <div class="filter" onclick="applyFilter('Trending')">
         <div><i class="fa-solid fa-fire"></i></div>
         <p>Trending</p>
@@ -80,7 +105,7 @@
     </div>
 </div>
 
-<!-- Listings Grid -->
+<!-- Listings -->
 <div class="container mt-4">
     <% if (AllListings.length === 0) { %>
         <div class="text-center mt-5">
@@ -88,29 +113,35 @@
         </div>
     <% } else { %>
         <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-            <% for (let list of AllListings) { %>
+            <% for (let listings of AllListings) { %>
                 <div class="col">
-                    <div class="card h-100">
-                        <a href="/listings/<%= list._id %>" class="listing-link text-decoration-none text-dark">
-                            <img src="<%= list.image || '/default.jpg' %>" onerror="this.src='/default.jpg'" class="card-img-top" alt="<%= list.title %>">
+                    <a href="/Listings/<%= listings._id %>" class="listing-link">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="position-relative">
+                                <img src="<%= listings.image?.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" class="card-img-top" alt="<%= listings.title %>">
+                                <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                                    <span>View Details</span>
+                                </div>
+                            </div>
                             <div class="card-body text-center">
                                 <p class="card-text">
-                                    <b><%= list.title %></b><br />
-                                    &#8377; <%= list.price %> / night
+                                    <strong><%= listings.title %></strong><br>
+                                    &#8377; <%= typeof listings.price === 'number' ? listings.price.toLocaleString("en-IN") : listings.price %> / night
                                 </p>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
             <% } %>
         </div>
     <% } %>
 </div>
 
-<!-- Filter Logic (optional JavaScript for future) -->
-<!-- <script>
+<!-- Filter Logic -->
+<script>
     function applyFilter(type) {
-        // You can redirect or send query to backend
-        window.location.href = `/listings?filter=${encodeURIComponent(type)}`;
+        // Redirect or send query to backend
+        window.location.href = `/Listings?filter=${encodeURIComponent(type)}`;
     }
-</script> -->
+</script>
+

@@ -7,15 +7,15 @@ module.exports.isLoggedIn = (req,res,next)=>{
         req.session.redirectUrl = req.originalUrl;
         req.flash("error", "Sorry you didn't log in!")
         return res.redirect("/Listings");
-      }
+    }
       next();
 }
 
 module.exports.saveRedirecturl = (req,res,next)=>{
-    if(req.session.redirectUrl){
-        res.locals.redirectUrl= req.session.redirectUrl;
-    }
-    next();
+  if(req.session.redirectUrl){
+    res.locals.redirectUrl= req.session.redirectUrl;
+  }
+  next();
 }
 
 module.exports.isOwner = async(req,res,next)=>{
