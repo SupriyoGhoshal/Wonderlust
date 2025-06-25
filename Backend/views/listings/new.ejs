@@ -1,57 +1,213 @@
 <% layout("/layouts/boilerplate") %>
-    <br> <br>
-    <h3>Create a New Listings</h3>
-    <div class="row">
-    <div class="col col-8 offset-2">
-    <form method="POSt" action="/Listings" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">
-          <leble for="title" class="form-leble">Title</leble>
-          <input name="listing[title]" placeholder="enter title" type="text" class="form-control" required/>
-          <div class="valid-feedback">
-           Title Looks good!
-          </div>
-        </div>
-        
-        <div class="mb-3">
-            <leble for="description" class="form-leble">Description</leble>
-          <textarea name="listing[description]" type="text" placeholder="description" class="form-control" required></textarea>
-          <div class="invalid-feedback">
-            enter description!!
-           </div>
-        </div>
-      
-        <div class="mb-3">
-          <leble for="image" class="form-leble">Upload image </leble>
-         <input name="listing[image]" type="file" class="form-control">
-         required
-      </div>
 
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <leble for="price" class="form-leble">Price</leble>
-           <input name="listing[price]" placeholder="enter price" type="number" class="form-control" required>
-           <div class="invalid-feedback">
-            Price should be vailid!
-           </div>
-        </div>
-        
-        <div class="mb-3 col-md-8"> 
-            <leble for="country" class="form-leble">Country</leble>
-           <input name="listing[country]" placeholder="enter country" type="text" class="form-control" required>
-        
-          <div class="invalid-feedback">
-            Country name should be vailid!
-          </div>
-        </div>
-        <div class="mb-3">
-          <leble for="location" class="form-leble">Location</leble>
-          <input name="listing[location]" placeholder="enter location" type="text" class="form-control" required>
-          <div class="invalid-feedback">
-            Location should be vailid!! 
-           </div>
-        </div>
-        <button class="btn btn-dark add-btn">Add</button>
-        <br><br>
-    </form>
+<style>
+  .create-listing-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .form-control {
+    border-radius: 0.375rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+  
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .valid-feedback {
+    color: #198754;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .add-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 600;
+    background-color: #212529;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .add-btn:hover {
+    background-color: #424649;
+    transform: translateY(-2px);
+  }
+  
+  .image-preview-container {
+    margin-top: 1rem;
+    display: none;
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 0.375rem;
+    border: 1px dashed #dee2e6;
+    padding: 0.5rem;
+  }
+  
+  .required-field::after {
+    content: " *";
+    color: #dc3545;
+  }
+</style>
+
+<div class="create-listing-container">
+  <h3 class="form-header">Create a New Listing</h3>
+  
+  <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+    <!-- Title Field -->
+    <div class="mb-4">
+      <label for="title" class="form-label required-field">Title</label>
+      <input name="listing[title]" id="title" placeholder="Enter a descriptive title" type="text" 
+             class="form-control" required minlength="5" maxlength="100">
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Please provide a valid title (5-100 characters).
+      </div>
     </div>
+    
+    <!-- Description Field -->
+    <div class="mb-4">
+      <label for="description" class="form-label required-field">Description</label>
+      <textarea name="listing[description]" id="description" placeholder="Describe your property in detail" 
+                class="form-control" rows="4" required minlength="20" maxlength="1000"></textarea>
+      <div class="valid-feedback">
+        Great description!
+      </div>
+      <div class="invalid-feedback">
+        Please provide a detailed description (at least 20 characters).
+      </div>
     </div>
+    
+    <!-- Image Upload Field -->
+    <div class="mb-4">
+      <label for="image" class="form-label required-field">Property Image</label>
+      <input name="listing[image]" id="image" type="file" class="form-control" accept="image/*" required>
+      <small class="text-muted">Upload a high-quality image of your property (JPEG, PNG)</small>
+      <div class="invalid-feedback">
+        Please upload an image of your property.
+      </div>
+      <div class="image-preview-container mt-3">
+        <img id="imagePreview" class="image-preview" src="#" alt="Image preview">
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Price Field -->
+      <div class="mb-4 col-md-6">
+        <label for="price" class="form-label required-field">Price per night</label>
+        <div class="input-group">
+          <span class="input-group-text">₹</span>
+          <input name="listing[price]" id="price" placeholder="Enter price" type="number" 
+                 class="form-control" min="100" max="100000" step="50" required>
+        </div>
+        <div class="valid-feedback">
+          Good price!
+        </div>
+        <div class="invalid-feedback">
+          Please provide a valid price (₹100 - ₹100,000).
+        </div>
+      </div>
+      
+      <!-- Country Field -->
+      <div class="mb-4 col-md-6">
+        <label for="country" class="form-label required-field">Country</label>
+        <input name="listing[country]" id="country" placeholder="Enter country" type="text" 
+               class="form-control" required minlength="3" maxlength="50">
+        <div class="valid-feedback">
+          Valid country!
+        </div>
+        <div class="invalid-feedback">
+          Please provide a valid country name.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Location Field -->
+    <div class="mb-4">
+      <label for="location" class="form-label required-field">Location</label>
+      <input name="listing[location]" id="location" placeholder="Enter exact location or address" 
+             type="text" class="form-control" required minlength="5" maxlength="200">
+      <div class="valid-feedback">
+        Good location!
+      </div>
+      <div class="invalid-feedback">
+        Please provide a valid location (5-200 characters).
+      </div>
+    </div>
+    
+    <!-- Submit Button -->
+    <button class="btn btn-dark add-btn mt-3">
+      <i class="fas fa-plus-circle me-2"></i> Create Listing
+    </button>
+  </form>
+</div>
+
+<script>
+  // Image preview functionality
+  document.getElementById('image').addEventListener('change', function(e) {
+    const previewContainer = document.querySelector('.image-preview-container');
+    const preview = document.getElementById('imagePreview');
+    const file = e.target.files[0];
+    
+    if (file) {
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        previewContainer.style.display = 'block';
+      }
+      
+      reader.readAsDataURL(file);
+    } else {
+      previewContainer.style.display = 'none';
+    }
+  });
+
+  // Form validation
+  (function() {
+    'use strict';
+    
+    // Fetch the form we want to apply custom Bootstrap validation styles to
+    const form = document.querySelector('.needs-validation');
+    
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    }, false);
+  })();
+</script>

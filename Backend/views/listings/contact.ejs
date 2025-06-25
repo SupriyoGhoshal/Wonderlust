@@ -1,48 +1,180 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container mt-5">
-    <div class="row justify-content-center align-items-center">
-        <div class="col-lg-10 shadow p-4 rounded bg-light">
-            <div class="row">
-                <!-- Left Portion -->
-                <div class="col-md-4  text-white d-flex flex-column justify-content-center align-items-center rounded-start">
-                    <h3 class="mb-3 text-dark">Wonderlust</h3>
-                    <p class="text-center px-2 text-dark">We'd love to hear from you!</p>
-                </div>
+<style>
+  .contact-container {
+    max-width: 900px;
+    margin: 3rem auto;
+  }
+  
+  .contact-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .contact-header {
+    background: linear-gradient(135deg, #c1bbc7 0%, #6192e7 100%);
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .contact-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+  
+  .contact-form {
+    padding: 2.5rem;
+  }
+  
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #495057;
+  }
+  
+  .form-control {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.2);
+  }
+  
+  .submit-btn {
+    background: linear-gradient(135deg, #c1bbc7 0%, #6192e7 100%);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+  }
+  
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+  }
+  
+  .contact-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  @media (max-width: 768px) {
+    .contact-header {
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .contact-form {
+      padding: 1.5rem;
+    }
+  }
+</style>
 
-                <!-- Right Portion (Form) -->
-                <div class="col-md-8 bg-white rounded-end">
-                    <form method="POST" action="/contact" class="p-3">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="subject" class="form-label">Subject</label>
-                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="4" placeholder="Enter your message" required></textarea>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary px-4">Submit</button>
-                        </div>
-                    </form>
+<div class="contact-container">
+  <div class="contact-card">
+    <div class="row g-0">
+      <!-- Left Section -->
+       <div class="col-md-4 left-container">
+            <div class="contact-header">
+                <div class="contact-icon">
+                <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h2 class="contact-title text-white">Wonderlust</h2>
+                <p class="contact-subtitle text-white">We'd love to hear from you! Reach out with any questions or feedback.</p>
+                <div class="mt-4">
+                <p class="text-white mb-1"><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</p>
+                <p class="text-white mb-0"><i class="fas fa-envelope me-2"></i> contact@wonderlust.com</p>
                 </div>
             </div>
-        </div>
+       </div>
+
+      <!-- Right Section (Form) -->
+      <div class="col-md-8 bg-white">
+        <form method="POST" action="/contact" class="contact-form needs-validation" novalidate>
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="John" required>
+              <div class="invalid-feedback">
+                Please provide your first name.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Doe" required>
+              <div class="invalid-feedback">
+                Please provide your last name.
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+              <div class="invalid-feedback">
+                Please provide a valid email.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="subject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="subject" name="subject" placeholder="How can we help?" required>
+              <div class="invalid-feedback">
+                Please provide a subject.
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Your message here..." required></textarea>
+            <div class="invalid-feedback">
+              Please provide your message.
+            </div>
+          </div>
+          
+          <div class="text-end">
+            <button type="submit" class="submit-btn text-white">
+              <i class="fas fa-paper-plane me-2"></i> Send Message
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+
+<script>
+// Form validation
+(function() {
+  'use strict';
+  
+  // Fetch the form we want to apply validation to
+  const form = document.querySelector('.needs-validation');
+  
+  form.addEventListener('submit', function(event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    form.classList.add('was-validated');
+  }, false);
+})();
+</script>
