@@ -12,6 +12,16 @@ module.exports.listingSchema = joi.object({
     }).required(),
 })
 
+module.exports.contactSchema = joi.object({
+    contact : joi.object({
+        firstname: joi.string().required(),
+        lastname: joi.string().required(),
+        email: joi.string().required(),
+        subject: joi.string().required(),
+        message: joi.string().required(),
+    }),
+})
+
 module.exports.reviewSchema = joi.object({
     review: joi.object({
         rating: joi.number().required().min(1).max(5),
