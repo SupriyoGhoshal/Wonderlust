@@ -73,8 +73,6 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hi, you entered the root path.");
 });
-
-
 const listingRouter = require("./routes/listing.js")
 const reviewRouter = require("./routes/review.js")
 const userRouter = require("./routes/user.js")

@@ -11,6 +11,13 @@ module.exports.listingSchema = joi.object({
         image: joi.string().allow("",null),
     }).required(),
 })
+module.exports.userSchema = joi.object({
+    user: joi.object({
+        username: joi.string().required(),
+        email: joi.string().required(),
+        password: joi.object().required()
+    })
+})
 
 module.exports.contactSchema = joi.object({
     contact : joi.object({

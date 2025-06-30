@@ -5,17 +5,29 @@
       <div class="col-lg-8">
         <!-- Listing Card -->
         <div class="card shadow-lg mb-5">
-          <img src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" 
-               class="card-img-top show-img" 
-               style="height: 400px; object-fit: cover;" 
-               alt="listing_image">
+          <div class="position-relative">
+            <img src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" 
+                 class="card-img-top show-img" 
+                 style="height: 400px; object-fit: cover;" 
+                 alt="<%= listing.title %>">
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge bg-success fs-6">₹<%= listing.price %>/night</span>
+            </div>
+          </div>
           
           <div class="card-body">
             <h3 class="card-title mb-3"><%= listing.title %></h3>
             
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="badge bg-primary fs-6"><%= listing.location %>, <%= listing.country %></span>
-              <h4 class="text-success">₹<%= listing.price %></h4>
+              <span class="badge bg-primary fs-6">
+                <i class="bi bi-geo-alt-fill me-1"></i><%= listing.location %>, <%= listing.country %>
+              </span>
+              <% if (listing.reviews.length > 0) { %>
+                <div class="text-warning">
+                  <% const avgRating = listing.reviews.reduce((acc, review) => acc + review.rating, 0) / listing.reviews.length; %>
+                  <i class="bi bi-star-fill"></i> <%= avgRating.toFixed(1) %> (<%= listing.reviews.length %>)
+                </div>
+              <% } %>
             </div>
             
             <p class="card-text lead"><%= listing.description %></p>
@@ -38,18 +50,46 @@
 
         <!-- Review Section -->
         <div class="card shadow-sm mb-4">
-          <div class="card-header bg-light">
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Leave a Review</h4>
+            <% if (listing.reviews.length > 0) { %>
+              <small class="text-muted"><%= listing.reviews.length %> reviews</small>
+            <% } %>
           </div>
           <div class="card-body">
             <form action="/Listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
-              <div class="mb-3">
-                <label for="rating" class="form-label">Rating</label>
-                <div class="d-flex align-items-center">
-                  <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]" required>
-                  <span class="ms-3 fs-5 text-warning" id="ratingValue">3</span>
+              <!-- Star Rating Input -->
+              <div class="mb-4">
+                <label class="form-label">Rating</label>
+                <div class="star-rating">
+                  <input type="radio" id="star5" name="review[rating]" value="5" required>
+                  <label for="star5" class="star-label" title="5 stars">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
+                  
+                  <input type="radio" id="star4" name="review[rating]" value="4">
+                  <label for="star4" class="star-label" title="4 stars">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
+                  
+                  <input type="radio" id="star3" name="review[rating]" value="3">
+                  <label for="star3" class="star-label" title="3 stars">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
+                  
+                  <input type="radio" id="star2" name="review[rating]" value="2">
+                  <label for="star2" class="star-label" title="2 stars">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
+                  
+                  <input type="radio" id="star1" name="review[rating]" value="1">
+                  <label for="star1" class="star-label" title="1 star">
+                    <i class="bi bi-star-fill"></i>
+                  </label>
                 </div>
+                <div class="invalid-feedback">Please select a rating</div>
               </div>
+
               <div class="mb-3">
                 <label for="comment" class="form-label">Your Review</label>
                 <textarea class="form-control" name="review[comment]" id="comment" rows="3" required 
@@ -72,13 +112,15 @@
           </div>
           <div class="card-body">
             <% if (listing.reviews.length > 0) { %>
-              <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div class="row row-cols-1 g-3">
                 <% for (let review of listing.reviews) { %>
                   <div class="col">
                     <div class="card h-100">
                       <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
-                          <h5 class="card-title">Anonymous User</h5>
+                          <h5 class="card-title">
+                            <i class="bi bi-person-circle me-2"></i><%= review.author?.username || 'Anonymous User' %>
+                          </h5>
                           <div class="text-warning">
                             <% for (let i = 0; i < review.rating; i++) { %>
                               <i class="bi bi-star-fill"></i>
@@ -89,9 +131,15 @@
                           </div>
                         </div>
                         <p class="card-text"><%= review.comment %></p>
-                        <small class="text-muted">Posted on <%= review.createdAt.toLocaleDateString() %></small>
+                        <small class="text-muted">
+                          <i class="bi bi-clock"></i> Posted on <%= review.createdAt.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          }) %>
+                        </small>
                       </div>
-                      <% if (currUser && currUser._id.toString() === listing.owner.toString()) { %>
+                      <% if (currUser && (currUser._id.toString() === listing.owner.toString() || currUser._id.toString() === review.author?._id.toString())) { %>
                         <div class="card-footer bg-transparent">
                           <form action="/Listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
                             <button class="btn btn-sm btn-outline-danger">
@@ -116,13 +164,74 @@
     </div>
   </div>
 
-  <!-- Rating value display script -->
-  <script>
-    const ratingInput = document.getElementById('rating');
-    const ratingValue = document.getElementById('ratingValue');
+  <style>
+    .star-rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
     
-    ratingInput.addEventListener('input', () => {
-      ratingValue.textContent = ratingInput.value;
+    .star-rating input {
+      display: none;
+    }
+    
+    .star-label {
+      color: #e4e5e9;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+    
+    .star-label:hover,
+    .star-label:hover ~ .star-label,
+    .star-rating input:checked ~ .star-label {
+      color: #ffc107;
+    }
+    
+    .star-rating input:checked + .star-label {
+      animation: bounce 0.5s;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    
+    .star-rating:not(:hover) input:checked ~ .star-label {
+      color: #ffc107;
+    }
+    
+    .show-img {
+      transition: transform 0.3s ease;
+    }
+    
+    .show-img:hover {
+      transform: scale(1.02);
+    }
+  </style>
+
+  <script>
+    // Form validation
+    document.querySelector('form.needs-validation').addEventListener('submit', function(e) {
+      const form = this;
+      const ratingSelected = form.querySelector('input[name="review[rating]"]:checked');
+      
+      if (!ratingSelected) {
+        e.preventDefault();
+        e.stopPropagation();
+        form.querySelector('.star-rating').classList.add('was-validated');
+      }
+      
+      form.classList.add('was-validated');
+    });
+
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
     });
   </script>
 </body>
