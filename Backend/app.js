@@ -84,10 +84,10 @@ app.use("/",userRouter)
 app.use("/", wishlist)
 
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Something went wrong!" } = err;
-  res.status(statusCode).render("error", { err });
-});
+// app.use((err, req, res, next) => {
+//   const { statusCode = 500, message = "Something went wrong!" } = err;
+//   res.status(statusCode).render("error", { err });
+// });
 
 // -------------------- Server --------------------
 const PORT = process.env.PORT || 3300;
