@@ -6,6 +6,25 @@
       <span class="fw-bold fs-4 text-gradient">Wonderlust</span>
     </a>
 
+    <!-- Search Bar - Visible on desktop -->
+    <div class="d-none d-lg-flex mx-4 flex-grow-1">
+      <div class="input-group search-container" style="max-width: 500px;">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="search-category">All</span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item search-filter" href="#" data-filter="all">All</a></li>
+          <li><a class="dropdown-item search-filter" href="#" data-filter="title">Title</a></li>
+          <li><a class="dropdown-item search-filter" href="#" data-filter="location">Location</a></li>
+          <li><a class="dropdown-item search-filter" href="#" data-filter="category">Category</a></li>
+        </ul>
+        <input type="text" class="form-control search-input" placeholder="Where are you going?" aria-label="Search">
+        <button class="btn btn-primary search-btn" type="button">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- Toggle button for mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,6 +33,16 @@
 
     <!-- Collapsible content -->
     <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Mobile Search - Hidden on desktop -->
+      <div class="d-lg-none mb-3 w-100">
+        <div class="input-group">
+          <input type="text" class="form-control search-input" placeholder="Search listings..." aria-label="Search">
+          <button class="btn btn-outline-primary search-btn" type="button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
+
       <!-- Left nav links -->
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
@@ -103,6 +132,32 @@
     padding: 0.5rem 1rem;
     margin: 0.15rem 0;
   }
+
+  /* Search bar styles */
+  .search-container {
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+  
+  .search-input {
+    border: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .search-input:focus {
+    box-shadow: none;
+    border-color: #ddd;
+  }
+  
+  .search-btn {
+    border-radius: 0 2rem 2rem 0 !important;
+  }
+  
+  .dropdown-toggle.search-filter-btn {
+    border-radius: 2rem 0 0 2rem !important;
+    min-width: 80px;
+  }
   
   @media (max-width: 991.98px) {
     .navbar-collapse {
@@ -111,6 +166,10 @@
     
     .nav-item {
       margin: 0.25rem 0;
+    }
+    
+    .search-container {
+      max-width: 100% !important;
     }
   }
 </style>
@@ -131,6 +190,57 @@
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Search functionality
+    const searchInputs = document.querySelectorAll('.search-input');
+    const searchBtns = document.querySelectorAll('.search-btn');
+    const searchFilters = document.querySelectorAll('.search-filter');
+    const searchCategory = document.querySelector('.search-category');
+    let currentFilter = 'all';
+
+    // Set search filter
+    searchFilters.forEach(filter => {
+      filter.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentFilter = this.dataset.filter;
+        searchCategory.textContent = this.textContent;
+        
+        // Update placeholder based on filter
+        const placeholderMap = {
+          'all': 'Where are you going?',
+          'title': 'Search by listing title...',
+          'location': 'Search by location...',
+          'category': 'Search by category...'
+        };
+        
+        searchInputs.forEach(input => {
+          input.placeholder = placeholderMap[currentFilter] || 'Where are you going?';
+        });
+      });
+    });
+
+    // Handle search
+    function performSearch() {
+      const searchTerm = document.querySelector('.search-input').value.trim();
+      if (searchTerm) {
+        // Redirect to search results page with query parameters
+        window.location.href = `/Listings/search?q=${encodeURIComponent(searchTerm)}&filter=${currentFilter}`;
+      }
+    }
+
+    // Add event listeners for search buttons
+    searchBtns.forEach(btn => {
+      btn.addEventListener('click', performSearch);
+    });
+
+    // Add event listener for Enter key
+    searchInputs.forEach(input => {
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
     });
   });
 </script>

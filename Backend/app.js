@@ -76,10 +76,12 @@ app.get("/", (req, res) => {
 const listingRouter = require("./routes/listing.js")
 const reviewRouter = require("./routes/review.js")
 const userRouter = require("./routes/user.js")
+const wishlist = require("./routes/wishlist.js")
 
 app.use("/Listings", listingRouter)
 app.use("/Listings/:id/reviews", reviewRouter)
 app.use("/",userRouter)
+app.use("/", wishlist)
 
 
 app.use((err, req, res, next) => {

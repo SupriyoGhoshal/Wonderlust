@@ -53,7 +53,14 @@ const listingSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
-  }
+  },
+  wishlist: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Listing'
+    }
+  ]
+
 }, { timestamps: true });
 
 listingSchema.post("findOneAndDelete", async(listing) =>{

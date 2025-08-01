@@ -1,0 +1,367 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+  <div class="row">
+    <!-- Left Sidebar -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <img src="<%= user.profileImage.url || 'https://ui-avatars.com/api/?name=' + user.username + '&background=random' %>" 
+               class="rounded-circle mb-3" 
+               width="150" 
+               height="150"
+               alt="Profile">
+          <h4 class="mb-1"><%= user.username %></h4>
+          <p class="text-muted mb-3"><%= user.email %></p>
+          
+          <div class="d-flex justify-content-center mb-3">
+            <div class="px-3 text-center">
+              <div class="h5 mb-0"><%= listingsCount %></div>
+              <small class="text-muted">Listings</small>
+            </div>
+            <div class="px-3 text-center">
+              <div class="h5 mb-0"><%= reviewsCount %></div>
+              <small class="text-muted">Reviews</small>
+            </div>
+            <div class="px-3 text-center">
+              <div class="h5 mb-0"><%= tripsCount %></div>
+              <small class="text-muted">Trips</small>
+            </div>
+          </div>
+          
+          <button class="btn btn-outline-primary rounded-pill px-4 w-100 mb-3" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#editProfileModal">
+            <i class="fa-solid fa-pen-to-square me-2"></i>Edit Profile
+          </button>
+          
+          <hr class="my-3">
+          
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/profile">
+                <i class="fa-solid fa-user me-2"></i> Profile
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/trips">
+                <i class="fa-solid fa-suitcase-rolling me-2"></i> Trips
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/wishlists">
+                <i class="fa-solid fa-heart me-2"></i> Wishlists
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/hosting">
+                <i class="fa-solid fa-house-user me-2"></i> Host Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/settings">
+                <i class="fa-solid fa-gear me-2"></i> Settings
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" href="#listings" data-bs-toggle="tab">Your Listings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#reviews" data-bs-toggle="tab">Reviews</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#trips" data-bs-toggle="tab">Upcoming Trips</a>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="card-body">
+          <div class="tab-content">
+            <!-- Listings Tab -->
+            <div class="tab-pane fade show active" id="listings">
+              <% if (userListings.length > 0) { %>
+                <div class="row">
+                  <% userListings.forEach(listing => { %>
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <img src="<%= listing.image.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" 
+                             class="card-img-top" 
+                             alt="<%= listing.title %>">
+                        <div class="card-body">
+                          <h5 class="card-title"><%= listing.title %></h5>
+                          <p class="card-text text-muted">
+                            <i class="fa-solid fa-location-dot me-1"></i> <%= listing.location %>
+                          </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">₹<%= listing.price.toLocaleString("en-IN") %> <small>night</small></span>
+                            <div>
+                              <a href="/listings/<%= listing._id %>/edit" class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="fa-solid fa-pen"></i>
+                              </a>
+                              <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                  <i class="fa-solid fa-trash"></i>
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="text-center py-5">
+                  <i class="fa-solid fa-house-circle-xmark fa-3x text-muted mb-3"></i>
+                  <h5>No listings yet</h5>
+                  <p class="text-muted">When you create listings, they'll appear here</p>
+                  <a href="/listings/new" class="btn btn-primary rounded-pill px-4">
+                    <i class="fa-solid fa-plus me-2"></i>Create a Listing
+                  </a>
+                </div>
+              <% } %>
+            </div>
+            
+            <!-- Reviews Tab -->
+            <div class="tab-pane fade" id="reviews">
+              <% if (userReviews.length > 0) { %>
+                <div class="list-group">
+                  <% userReviews.forEach(review => { %>
+                    <div class="list-group-item border-0 py-3">
+                      <div class="d-flex mb-2">
+                        <img src="<%= review.author.profileImage || 'https://ui-avatars.com/api/?name=' + review.author.username + '&background=random' %>" 
+                             class="rounded-circle me-3" 
+                             width="48" 
+                             height="48">
+                        <div>
+                          <h6 class="mb-0"><%= review.author.username %></h6>
+                          <div class="text-warning">
+                            <% for (let i = 0; i < review.rating; i++) { %>
+                              <i class="fa-solid fa-star"></i>
+                            <% } %>
+                            <% for (let i = review.rating; i < 5; i++) { %>
+                              <i class="fa-regular fa-star"></i>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="mb-2"><%= review.comment %></p>
+                      <small class="text-muted">
+                        Reviewed on <%= review.createdAt.toLocaleDateString() %> • 
+                        <a href="/listings/<%= review.listing._id %>"><%= review.listing.title %></a>
+                      </small>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="text-center py-5">
+                  <i class="fa-solid fa-comment-dots fa-3x text-muted mb-3"></i>
+                  <h5>No reviews yet</h5>
+                  <p class="text-muted">When you receive reviews, they'll appear here</p>
+                </div>
+              <% } %>
+            </div>
+            
+            <!-- Trips Tab -->
+            <div class="tab-pane fade" id="trips">
+              <% if (upcomingTrips.length > 0) { %>
+                <div class="list-group">
+                  <% upcomingTrips.forEach(trip => { %>
+                    <div class="list-group-item border-0 py-3">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <img src="<%= trip.listing.image.url || 'https://images.unsplash.com/photo-1603477849227-705c424d1d80?q=80&w=1074&auto=format&fit=crop' %>" 
+                               class="img-fluid rounded" 
+                               alt="<%= trip.listing.title %>">
+                        </div>
+                        <div class="col-md-9">
+                          <h5><%= trip.listing.title %></h5>
+                          <p class="text-muted mb-2">
+                            <i class="fa-solid fa-location-dot me-1"></i> <%= trip.listing.location %>
+                          </p>
+                          <div class="d-flex flex-wrap gap-3 mb-2">
+                            <div>
+                              <small class="text-muted">Check-in</small>
+                              <div class="fw-bold"><%= new Date(trip.checkIn).toLocaleDateString() %></div>
+                            </div>
+                            <div>
+                              <small class="text-muted">Check-out</small>
+                              <div class="fw-bold"><%= new Date(trip.checkOut).toLocaleDateString() %></div>
+                            </div>
+                            <div>
+                              <small class="text-muted">Guests</small>
+                              <div class="fw-bold"><%= trip.guests %></div>
+                            </div>
+                            <div>
+                              <small class="text-muted">Total</small>
+                              <div class="fw-bold">₹<%= trip.totalPrice.toLocaleString("en-IN") %></div>
+                            </div>
+                          </div>
+                          <div class="d-flex gap-2">
+                            <a href="/listings/<%= trip.listing._id %>" class="btn btn-outline-primary btn-sm">
+                              View Listing
+                            </a>
+                            <button class="btn btn-outline-secondary btn-sm">
+                              Contact Host
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="text-center py-5">
+                  <i class="fa-solid fa-suitcase-rolling fa-3x text-muted mb-3"></i>
+                  <h5>No upcoming trips</h5>
+                  <p class="text-muted">When you book a stay, it will appear here</p>
+                  <a href="/listings" class="btn btn-primary rounded-pill px-4">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Explore Listings
+                  </a>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="text-center mb-4">
+            <img id="profileImagePreview" 
+                 src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.username + '&background=random' %>" 
+                 class="rounded-circle mb-2" 
+                 width="120" 
+                 height="120"
+                 alt="Profile Preview">
+            <input type="file" 
+                   class="form-control d-none" 
+                   id="profileImageInput" 
+                   name="profileImage"
+                   accept="image/*">
+            <button type="button" 
+                    class="btn btn-sm btn-outline-secondary" 
+                    onclick="document.getElementById('profileImageInput').click()">
+              <i class="fa-solid fa-camera me-1"></i> Change Photo
+            </button>
+          </div>
+          
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="username" 
+                   name="username"
+                   value="<%= user.username %>">
+          </div>
+          
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" 
+                   class="form-control" 
+                   id="email" 
+                   name="email"
+                   value="<%= user.email %>">
+          </div>
+          
+          <div class="mb-3">
+            <label for="bio" class="form-label">Bio</label>
+            <textarea class="form-control" 
+                      id="bio" 
+                      name="bio"
+                      rows="3"><%= user.bio || '' %></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 2px solid #0d6efd;
+    background-color: transparent;
+  }
+  
+  .nav-tabs .nav-link:hover:not(.active) {
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+  }
+  
+  .list-group-item:first-child {
+    border-top: none;
+  }
+  
+  #profileImagePreview {
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  #profileImagePreview:hover {
+    transform: scale(1.05);
+  }
+</style>
+
+<script>
+  // Profile image preview
+  document.getElementById('profileImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        document.getElementById('profileImagePreview').src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  
+  // Tab persistence
+  document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    if (activeTab) {
+      const tabTrigger = document.querySelector(`[href="#${activeTab}"]`);
+      if (tabTrigger) {
+        new bootstrap.Tab(tabTrigger).show();
+      }
+    }
+  });
+</script>
