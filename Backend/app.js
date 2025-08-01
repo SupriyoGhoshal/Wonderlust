@@ -86,7 +86,7 @@ app.use("/", wishlist)
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong!" } = err;
-  res.status(statusCode).render("errors.ejs", { message });
+  res.status(statusCode).render("error.ejs", { message });
 });
 
 // -------------------- Server --------------------
